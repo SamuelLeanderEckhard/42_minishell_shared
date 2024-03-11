@@ -6,7 +6,7 @@
 /*   By: bszabo <bszabo@student.42vienna.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 13:42:31 by bszabo            #+#    #+#             */
-/*   Updated: 2024/03/10 10:21:24 by bszabo           ###   ########.fr       */
+/*   Updated: 2024/03/11 10:05:04 by bszabo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,5 +19,5 @@ int	main(int argc, char *argv[], char *env[])
 	if (argc != 1 || argv[1] || !env)
 		return (ft_printf_fd(2, ARGS_ERROR), ERROR);
 	if (init(&data, env) == ERROR)
-		return (ERROR);
+		return (clean_up(&data), ERROR);
 }

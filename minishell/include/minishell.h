@@ -6,14 +6,14 @@
 /*   By: bszabo <bszabo@student.42vienna.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 13:37:09 by bszabo            #+#    #+#             */
-/*   Updated: 2024/03/10 12:36:53 by bszabo           ###   ########.fr       */
+/*   Updated: 2024/03/11 10:25:07 by bszabo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-# include "../libft/include/libft.h"
+# include "libft.h"
 # include <stdio.h>
 # include <unistd.h>
 # include <stdlib.h>
@@ -50,11 +50,12 @@ typedef struct s_data
 	char	*line; // "ls -l | sort | grep a > output.txt"
 	char	**line_split; // split by "|" {"ls -l", "sort", "grep a > output.txt"}
 	char	**cmd_paths; // array of paths to commands
-	t_cmd	*cmds; // array of commands
+	t_cmd	**cmds; // array of commands
 	int		exit_status;
 }	t_data;
 
 // Function prototypes
-int	init(t_data *data, char *env[]);
+void	clean_up(t_data *data);
+int		init(t_data *data, char *env[]);
 
 # endif

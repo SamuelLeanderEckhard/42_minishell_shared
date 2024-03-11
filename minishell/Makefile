@@ -29,7 +29,8 @@ LFLAGS = -L$(LIBFT_DIR) -lft -lreadline
 RM = rm -rf
 
 # Source files
-SRC = init.c \
+SRC = clean_up.c \
+		init.c \
 		main.c
 
 # Object files

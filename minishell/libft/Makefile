@@ -2,8 +2,6 @@
 
 # Library name
 NAME = libft.a
-NAME_BONUS = libft_bonus.a
-NAME_FULL = libft_full.a
 
 # Source directories
 SRC_DIR = ./src
@@ -12,25 +10,24 @@ SRC_GNL_DIR = $(SRC_DIR)/get_next_line
 SRC_PRINTF_DIR = $(SRC_DIR)/ft_printf
 SRC_PRINTF_FD_DIR = $(SRC_DIR)/ft_printf_fd
 
-# Headers
-HEADERS_DIR = ./include
-HEADERS = $(HEADERS_DIR)/libft.h
+# Other directories
+OBJ_DIR = ./obj
+INCLUDE_DIR = ./include
 
 # Compiler and flags
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -I$(HEADERS_DIR)
+CFLAGS = -Wall -Wextra -Werror -MMD -MP -I$(INCLUDE_DIR)
 
 # Archiver
 AR = ar rcs
 
 # Remove command
-RM = rm -f
+RM = rm -rf
 
 # Source files
 SRC = ft_atoi.c \
       ft_bzero.c \
       ft_calloc.c \
-      ft_free_str_arr.c \
       ft_isalnum.c \
       ft_isalpha.c \
       ft_isascii.c \
@@ -48,7 +45,6 @@ SRC = ft_atoi.c \
       ft_putstr_fd.c \
       ft_split.c \
       ft_strchr.c \
-      ft_strcmp.c \
       ft_strdup.c \
       ft_striteri.c \
       ft_strjoin.c \
@@ -74,6 +70,10 @@ SRC_BONUS = ft_lstadd_back.c \
             ft_lstnew.c \
             ft_lstsize.c
 
+SRC_OTHER = ft_free_str_arr.c \
+            ft_strcmp.c \
+            ft_strdup_arr.c
+
 SRC_GNL = get_next_line.c
 
 SRC_PRINTF = ft_printf_utils.c \
@@ -85,41 +85,51 @@ SRC_PRINTF_FD = ft_printf_fd_utils.c \
                 ft_printf_fd.c
 
 # Object files
-OBJ = $(SRC:%.c=$(SRC_DIR)/%.o)
-OBJ_BONUS = $(SRC_BONUS:%.c=$(SRC_BONUS_DIR)/%.o)
-OBJ_GNL = $(SRC_GNL:%.c=$(SRC_GNL_DIR)/%.o)
-OBJ_PRINTF = $(SRC_PRINTF:%.c=$(SRC_PRINTF_DIR)/%.o)
-OBJ_PRINTF_FD = $(SRC_PRINTF_FD:%.c=$(SRC_PRINTF_FD_DIR)/%.o)
-OBJ_FULL = $(OBJ) $(OBJ_BONUS) $(OBJ_GNL) $(OBJ_PRINTF) $(OBJ_PRINTF_FD)
+OBJ = $(addprefix $(OBJ_DIR)/, $(SRC:.c=.o))
+OBJ_BONUS = $(addprefix $(OBJ_DIR)/, $(SRC_BONUS:.c=.o))
+OBJ_OTHER = $(addprefix $(OBJ_DIR)/, $(SRC_OTHER:.c=.o))
+OBJ_GNL = $(addprefix $(OBJ_DIR)/, $(SRC_GNL:.c=.o))
+OBJ_PRINTF = $(addprefix $(OBJ_DIR)/, $(SRC_PRINTF:.c=.o))
+OBJ_PRINTF_FD = $(addprefix $(OBJ_DIR)/, $(SRC_PRINTF_FD:.c=.o))
+OBJ_FULL = $(OBJ) $(OBJ_BONUS) $(OBJ_OTHER) $(OBJ_GNL) $(OBJ_PRINTF) $(OBJ_PRINTF_FD)
+DEPS = $(OBJ_FULL:.o=.d)
+
+# Include dependency files
+-include $(DEPS)
 
 # Compile individual source files
-$(SRC_DIR)/%.o: $(SRC_DIR)/%.c $(HEADERS)
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
+	@$(CC) $(CFLAGS) -c $< -o $@
+
+$(OBJ_DIR)/%.o: $(SRC_BONUS_DIR)/%.c | $(OBJ_DIR)
+	@$(CC) $(CFLAGS) -c $< -o $@
+
+$(OBJ_DIR)/%.o: $(SRC_GNL_DIR)/%.c | $(OBJ_DIR)
+	@$(CC) $(CFLAGS) -c $< -o $@
+
+$(OBJ_DIR)/%.o: $(SRC_PRINTF_DIR)/%.c | $(OBJ_DIR)
+	@$(CC) $(CFLAGS) -c $< -o $@
+
+$(OBJ_DIR)/%.o: $(SRC_PRINTF_FD_DIR)/%.c | $(OBJ_DIR)
 	@$(CC) $(CFLAGS) -c $< -o $@
 
 # Phony Targets
 all: $(NAME)
 
 clean:
-	@$(RM) $(OBJ_FULL)
+	@$(RM) $(OBJ_DIR)
 
 fclean: clean
-	@$(RM) $(NAME) $(NAME_BONUS) $(NAME_FULL)
+	@$(RM) $(NAME)
 
 re: fclean all
 
-bonus: $(NAME_BONUS)
-
-# (bonus, get_next_line, ft_printf, ft_printf_fd)
-full: $(NAME_FULL)
-
 # Target Rules
-$(NAME): $(OBJ)
-	@$(AR) $(NAME) $(OBJ)
+$(NAME): $(OBJ_FULL)
+	@$(AR) $(NAME) $(OBJ_FULL)
 
-$(NAME_BONUS): $(OBJ_BONUS)
-	@$(AR) $(NAME_BONUS) $(OBJ_BONUS)
+# Create object directory
+$(OBJ_DIR):
+	@mkdir -p $(OBJ_DIR)
 
-$(NAME_FULL): $(OBJ_FULL)
-	@$(AR) $(NAME_FULL) $(OBJ_FULL)
-
-.PHONY: all clean fclean re bonus full
+.PHONY: all clean fclean re

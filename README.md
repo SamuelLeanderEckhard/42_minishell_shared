@@ -11,3 +11,11 @@
 [42 minishell](https://youtube.com/playlist?list=PLGU1kcPKHMKj5yA0RPb5AK4QAhexmQwrW&si=qUeTIHAtYtlATnUM)
 
 [Other minishell resources](https://github.com/pasqualerossi/Minishell_Resources?tab=readme-ov-file)
+
+Writing a Unix Shell (3 Parts):
+
+[Part I deals with understanding fork.](https://indradhanush.github.io/blog/writing-a-unix-shell-part-1/)
+   
+[Part II explains how to execute commands like ls and pwd.](https://indradhanush.github.io/blog/writing-a-unix-shell-part-2/)
+   
+[Part III explains the concepts of signal handling.](https://indradhanush.github.io/blog/writing-a-unix-shell-part-3/)

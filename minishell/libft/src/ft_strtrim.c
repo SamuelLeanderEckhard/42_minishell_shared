@@ -6,21 +6,11 @@
 /*   By: bszabo <bszabo@student.42vienna.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/10 10:53:21 by bszabo            #+#    #+#             */
-/*   Updated: 2023/09/10 10:56:16 by bszabo           ###   ########.fr       */
+/*   Updated: 2024/03/20 12:28:31 by bszabo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-
-size_t	ft_strlen(const char *str)
-{
-	int	i;
-
-	i = 0;
-	while (str[i])
-		i++;
-	return (i);
-}
 
 // return 1 if 'c' is in 'set', 0 otherwise
 static int	is_in_set(char c, char const *set)

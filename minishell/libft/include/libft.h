@@ -6,7 +6,7 @@
 /*   By: bszabo <bszabo@student.42vienna.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/12 10:48:30 by bszabo            #+#    #+#             */
-/*   Updated: 2024/03/10 09:57:00 by bszabo           ###   ########.fr       */
+/*   Updated: 2024/03/27 11:46:13 by bszabo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,9 @@
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 42
 # endif
+
+# define S_QUOTE '\''
+# define D_QUOTE '\"'
 
 # include <stddef.h>
 # include <stdlib.h>
@@ -78,9 +81,14 @@ void	ft_lstiter(t_list *lst, void (*f)(void *));
 t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
 
 // Other libft functions
+int		ft_arrlen(char **arr);
+void	ft_free_str_arr_2d(char ***arr);
 void	ft_free_str_arr(char **arr);
+char	***ft_split_quotes_2d(char **arr, char c);
+char	**ft_split_quotes(char *str, char c);
 int		ft_strcmp(char *s1, char *s2);
 char	**ft_strdup_arr(char *arr[]);
+char	*ft_strreplace(char *str, char *old_s, char *new_s, int start_i);
 
 // get_next_line functions
 // File: get_next_line.c

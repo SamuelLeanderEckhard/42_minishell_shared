@@ -1,19 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_split.c                                         :+:      :+:    :+:   */
+/*   ft_split_quotes.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bszabo <bszabo@student.42vienna.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/10 10:59:28 by bszabo            #+#    #+#             */
-/*   Updated: 2024/03/20 12:30:21 by bszabo           ###   ########.fr       */
+/*   Created: 2024/03/19 20:01:15 by bszabo            #+#    #+#             */
+/*   Updated: 2024/03/20 12:30:41 by bszabo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
+// find next occurrence of 'quote' in 'line' starting at index 'i'
+// return index of next 'quote' or index of null terminator
+static int	find_next_quote(char *line, int i, char quote)
+{
+	i++;
+	while (line[i] && line[i] != quote)
+		i++;
+	return (i);
+}
+
 // count number of substrings in string 'str' separated by char 'c'
-static int	count_substrs(char const *str, char c)
+// return number of substrings
+static int	count_substrs(char *str, char c)
 {
 	int	i;
 	int	count;
@@ -26,22 +37,38 @@ static int	count_substrs(char const *str, char c)
 		{
 			count++;
 			while (str[i] != c && str[i])
+			{
+				if (str[i] == S_QUOTE)
+					i = find_next_quote(str, i, S_QUOTE);
+				else if (str[i] == D_QUOTE)
+					i = find_next_quote(str, i, D_QUOTE);
 				i++;
+			}
 		}
-		else if (str[i] == c)
+		else
 			i++;
 	}
 	return (count);
 }
 
 // count number of characters in substring starting at index 'i'
-static int	get_substr_len(char const *str, char c, int i)
+static int	get_substr_len(char *str, char c, int i)
 {
 	int	count;
 
 	count = 0;
 	while (str[i] != c && str[i])
 	{
+		if (str[i] == S_QUOTE)
+		{
+			count += find_next_quote(str, i, S_QUOTE) - i;
+			i += find_next_quote(str, i, S_QUOTE) - i;
+		}
+		else if (str[i] == D_QUOTE)
+		{
+			count += find_next_quote(str, i, D_QUOTE) - i;
+			i += find_next_quote(str, i, D_QUOTE) - i;
+		}
 		count++;
 		i++;
 	}
@@ -50,7 +77,7 @@ static int	get_substr_len(char const *str, char c, int i)
 
 // fill 'arr' array with substrings
 // return 0 if successful, -1 if malloc fails
-static int	fill_arr(char **arr, char const *str, char c)
+static int	fill_arr(char **arr, char *str, char c)
 {
 	int	i;
 	int	str_index;
@@ -78,8 +105,9 @@ static int	fill_arr(char **arr, char const *str, char c)
 }
 
 // split string 'str' into substrings using char 'c' as delimiter
+// same as ft_split, but if 'c' is inside single or double quotes, it is ignored
 // return array of substrings with NULL ending if successful, NULL if fails
-char	**ft_split(char const *str, char c)
+char	**ft_split_quotes(char *str, char c)
 {
 	int		substrs;
 	char	**arr;
@@ -98,30 +126,32 @@ char	**ft_split(char const *str, char c)
 	return (arr);
 }
 
-// #include <stdio.h>
-// int main(void)
-// {
-// 	char *str = " <>   split    'this' by  space!  <>  ";
-// 	// char *str = "hi";
-// 	// char *str = "";
-// 	char **res_arr = ft_split(str, ' ');
-// 	if (res_arr == NULL)
-// 	{
-// 		printf("ft_split() returned NULL\n");
-// 		return (1);
-// 	}
+/*
+#include <stdio.h>
+int main(void)
+{
+	// char *str = " <>   split    'this   ' by  space!  <>  ";
+	char *str = "echo 'hello | world' | ls -l | grep c | wc -l";
+	// char *str = "";
+	char **res_arr = ft_split_quotes(str, '|');
+	if (res_arr == NULL)
+	{
+		printf("ft_split_quotes() returned NULL\n");
+		return (1);
+	}
 
-// 	printf("str: %s\n", str);
-// 	int i = 0;
-// 	while (res_arr[i])
-// 	{
-// 		printf("res_arr[%d] %s\n", i, res_arr[i]);
-// 		if (res_arr[++i] == NULL)
-// 			printf("res_arr[%d] NULL\n", i);
-// 	}
+	printf("str: %s\n", str);
+	int i = 0;
+	while (res_arr[i])
+	{
+		printf("res_arr[%d] %s\n", i, res_arr[i]);
+		if (res_arr[++i] == NULL)
+			printf("res_arr[%d] NULL\n", i);
+	}
 
-// 	for (int i = 0; res_arr[i]; i++)
-// 		free(res_arr[i]);
-// 	free(res_arr);
-// 	return (0);
-// }
+	for (int i = 0; res_arr[i]; i++)
+		free(res_arr[i]);
+	free(res_arr);
+	return (0);
+}
+*/

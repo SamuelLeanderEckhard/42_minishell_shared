@@ -6,7 +6,7 @@
 /*   By: bszabo <bszabo@student.42vienna.com>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/09 13:42:31 by bszabo            #+#    #+#             */
-/*   Updated: 2024/03/11 16:58:09 by bszabo           ###   ########.fr       */
+/*   Updated: 2024/04/23 12:50:47 by bszabo           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,23 +15,26 @@
 // main loop for minishell
 // handle signals, read line, add it to history, parse, execute, and free line
 // return ERROR if any of the steps fail
-int	main_loop(t_data *data)
+static int	main_loop(t_data *data)
 {
 	while (1)
 	{
-		// handle_signals();
+		clean_up_loop(data);
+		sig_cases(INTERACTIVE);
 		data->line = readline(PROMPT);
+		sig_cases(NON_INTERACTIVE);
+		if (g_signal == CTRL_C && g_signal--)
+			data->exit_status = 130;
 		if (!data->line)
-			return (clean_up(data), ERROR);
+			return (printf("exit\n"), ERROR);
 		if (ft_strlen(data->line) > 0)
 		{
 			add_history(data->line);
-			// if (parse_line(data) == ERROR)
-			// 	return (ERROR);
-			// if (exec_line(data) == ERROR)
-			// 	return (ERROR);
+			if (check_line(data) == ERROR)
+				continue;
+			if (parse_execute_line(data) == ERROR)
+				continue;
 		}
-		free(data->line);
 	}
 	return (OK);
 }
@@ -39,7 +42,6 @@ int	main_loop(t_data *data)
 // 1. check arguments
 // 2. initialize data
 // 3. main loop
-// 4. clean up and exit
 int	main(int argc, char *argv[], char *env[])
 {
 	t_data	data;
@@ -49,5 +51,5 @@ int	main(int argc, char *argv[], char *env[])
 	if (init(&data, env) == ERROR)
 		return (clean_up(&data), ERROR);
 	if (main_loop(&data) == ERROR)
-		return (clean_up(&data), ERROR);
+		return (clean_up(&data), data.exit_status);
 }
